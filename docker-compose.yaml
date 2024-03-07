@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: pass123
+      POSTGRES_DB: TodoWebAppDb
+    networks:
+      - aspnetcoreapp-network
+
+  todoapp:
+    build:
+      context: src
+      dockerfile: TodoApp/Dockerfile.development
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - aspnetcoreapp-network
+    environment:
+      - TEST_ENVIRONMENT=true
+      - DATABASE_CONNECTION_STRING=Server=db;Database=TodoWebAppDb;User Id=postgres;Password=pass123;
+    command: >
+      bash -c "dotnet ef database update && dotnet run --urls=http://0.0.0.0:8080"
+
+networks:
+  aspnetcoreapp-network:
+    driver: bridge

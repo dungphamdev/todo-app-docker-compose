@@ -1,0 +1,22 @@
+﻿@model List<TodoApp.Models.Todo>
+
+@{
+    ViewData["Title"] = "Todo List";
+}
+
+<h1>Todo List</h1>
+
+<form method="post" asp-action="AddTask">
+    <input type="text" name="task" required />
+    <button type="submit">Add Task</button>
+</form>
+
+<ul>
+    @foreach (var todo in Model)
+    {
+        <li>
+            @todo.Task
+            <a href="Home/RemoveTask?id=@todo.Id">Remove</a>
+        </li>
+    }
+</ul>
